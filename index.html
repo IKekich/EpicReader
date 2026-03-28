@@ -39,7 +39,8 @@ mangaList.forEach(m => {
     let card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-        <lass="title">${m.title}</div>
+        ${m.cover}
+        <div class="title">${m.title}</div>
     `;
     card.onclick = () => {
         window.location.href = `reader.html?manga=${m.id}`;
