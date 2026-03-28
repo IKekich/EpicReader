@@ -1,59 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>EpicReader</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body { margin: 0; background: #1a1a1a; color: white; font-family: sans-serif; text-align: center; }
-        .container { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        img { max-width: 100%; height: auto; display: block; margin-bottom: 2px; }
-        .nav-buttons { padding: 20px; display: flex; gap: 10px; justify-content: center; }
-        button { padding: 10px 20px; background: #3390ec; border: none; color: white; border-radius: 8px; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manga Menu</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+    body { margin:0; background:#121212; color:white; font-family:sans-serif; }
+    h1 { text-align:center; padding:20px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:16px; padding:20px; }
+    .card { background:#1e1e1e; border-radius:12px; overflow:hidden; cursor:pointer; transition:.25s; }
+    .card:hover { transform:scale(1.05); }
+    .card img { width:100%; height:210px; object-fit:cover; }
+    .title { padding:10px; text-align:center; font-size:14px; }
+</style>
 </head>
+
 <body>
-    <div id="reader" class="container">
-      
-    </div>
-    <div class="nav-buttons">
-        <button onclick="window.scrollTo(0,0)">Наверх</button>
-        <button onclick="tg.close()">Закрыть</button>
-    </div>
 
-    <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+<h1>📚 Выберите мангу</h1>
 
-        // Список прямых ссылок на страницы манги
-        const pages = [
-            "https://i.ibb.co/JFGdHqZp/image.png",
-            "https://i.ibb.co/7xq0rNkb/1.png",
-            "https://i.ibb.co/fd3bCdZS/2.png",
-            "https://i.ibb.co/Y4QZD7Wx/3.png",
-            "https://i.ibb.co/S4PcPWJ3/4.png",
-            "https://i.ibb.co/271bFqBd/5.png",
-            "https://i.ibb.co/VYsr5WkP/6.png",
-            "https://i.ibb.co/bMyXVq0V/7.png",
-            "https://i.ibb.co/DHxpRmht/8.png",
-            "https://i.ibb.co/6RcJRhmV/9.png",
-            "https://i.ibb.co/7xyZwHmR/10.png",
-            "https://i.ibb.co/qSb8V1V/11.png",
-            "https://i.ibb.co/Q7bQzwK2/12.png",
-            "https://i.ibb.co/Rp9dSQ6p/13.png",
-            "https://i.ibb.co/7JBQskmr/14.png",
-            "https://i.ibb.co/x8DBbpX0/15.png",
-            "https://i.ibb.co/BKqJ1Kk6/16.png"   
-        ];
+<div class="grid" id="grid"></div>
 
-        const reader = document.getElementById('reader');
-        pages.forEach(src => {
-            const img = document.createElement('img');
-            img.src = src;
-            img.loading = "lazy";
-            reader.appendChild(img);
-        });
-    </script>
+<script>
+const mangaList = [
+    {
+        id: "epic",
+        title: "Nine Sols: The Way of Lear (Путь Ли Эра)",
+        cover: "https://i.ibb.co/JFGdHqZp/image.png"
+    }
+];
+
+//Card generating
+const grid = document.getElementById("grid");
+
+mangaList.forEach(m => {
+    let card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = `
+        <lass="title">${m.title}</div>
+    `;
+    card.onclick = () => {
+        window.location.href = `reader.html?manga=${m.id}`;
+    };
+    grid.appendChild(card);
+});
+</script>
+
 </body>
 </html>
