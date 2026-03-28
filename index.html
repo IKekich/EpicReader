@@ -28,7 +28,7 @@ const mangaList = [
     {
         id: "epic",
         title: "Nine Sols: The Way of Lear (Путь Ли Эра)",
-        cover: "https://github.com/IKekich/EpicReader/blob/5794c73748a4c716dc42eeb8ca0eb48a72feb5d2/thumbnails/%D0%9F%D1%83%D1%82%D1%8C%20%D0%9B%D0%B8%20%D0%AD%D1%80%D0%B0.png"
+        cover: "https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/Путь%20Ли%20Эра.png"
     }
 ];
 
@@ -39,7 +39,7 @@ mangaList.forEach(m => {
     let card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
-        ${m.cover}
+        <img src="${m.cover}">
         <div class="title">${m.title}</div>
     `;
     card.onclick = () => {
