@@ -11,6 +11,44 @@
     img { max-width:100%; margin-bottom:2px; }
     .nav-buttons { padding:20px; display:flex; gap:10px; justify-content:center; }
     button { background:#3390ec; border:none; padding:10px 20px; border-radius:8px; color:white; }
+
+    /* Плавающие кнопки */
+    .floating-btn {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        width: 54px;
+        height: 54px;
+        background: #3390ec;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0.6);
+        pointer-events: none;
+        transition: opacity .25s ease, transform .25s ease;
+        z-index: 3000;
+}
+
+    .floating-btn.show {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+}
+
+    .home-btn {
+        width: auto;
+        height: auto;
+        padding: 12px 18px;
+        font-size: 16px;
+        border-radius: 10px;
+        background: #3390ec;
+}
+
 </style>
 </head>
 
@@ -75,7 +113,32 @@ const epicDB = {
             "https://i.ibb.co/xKgppJJY/22.png",
             "https://i.ibb.co/Hp2qSJKg/23.png",
             "https://i.ibb.co/zhX63kq4/24.png",
-            "https://i.ibb.co/h1FppNPp/25.png"
+            "https://i.ibb.co/h1FppNPp/25.png",
+            "https://i.ibb.co/MyVW36kB/1.png",
+            "https://i.ibb.co/nMRbv1pD/2.png",
+            "https://i.ibb.co/twB3KCKK/3.png",
+            "https://i.ibb.co/Z6DF0c83/4.png",
+            "https://i.ibb.co/Y7YmLFTj/5.png",
+            "https://i.ibb.co/5xs58c60/6.png",
+            "https://i.ibb.co/ynXNGWQS/7.png",
+            "https://i.ibb.co/SDdsJRGF/8.png",
+            "https://i.ibb.co/r2JGNS1Z/9.png",
+            "https://i.ibb.co/TM4XvpX4/10.png",
+            "https://i.ibb.co/BHV8Gv3Q/11.png",
+            "https://i.ibb.co/XxzMbBr9/12.png",
+            "https://i.ibb.co/B23TCjsJ/13.png",
+            "https://i.ibb.co/nMKfHtLb/14.png",
+            "https://i.ibb.co/p69fPt8Z/15.png",
+            "https://i.ibb.co/m5yC1d7x/16.png",
+            "https://i.ibb.co/Gv5Sw9PR/17.png",
+            "https://i.ibb.co/kgyttYVq/18.png",
+            "https://i.ibb.co/B5yhSbCF/19.png",
+            "https://i.ibb.co/ksZPm4nD/20.png",
+            "https://i.ibb.co/G48MR2n4/21.png",
+            "https://i.ibb.co/TMx1gfKn/22.png",
+            "https://i.ibb.co/TDTWjmgN/23.png",
+            "https://i.ibb.co/0RM7HnWn/24.png",
+            "https://i.ibb.co/1JJmSNgr/25.png"
 
         ]
     }
@@ -94,9 +157,6 @@ if (!epicDB[mangaId]) {
 
 const pages = epicDB[mangaId].pages;
 
-// ------------------------------
-// Page download
-// ------------------------------
 const reader = document.getElementById("reader");
 
 pages.forEach(src => {
@@ -105,7 +165,46 @@ pages.forEach(src => {
     img.loading = "lazy";
     reader.appendChild(img);
 });
+
+// ------------------------------
+// Floating buttons logic
+// ------------------------------
+const btnUp = document.getElementById("btnUp");
+const btnHome = document.getElementById("btnHome");
+
+// Показать/скрыть кнопки
+window.addEventListener("scroll", () => {
+    if (window.scrollY > 250) {
+        // Показать стрелку
+        btnUp.classList.add("show");
+
+        // Скрыть меню
+        btnHome.classList.remove("show");
+    } else {
+        // Показывать кнопку "Меню" наверху страницы
+        btnHome.classList.add("show");
+
+        // Скрывать стрелку
+        btnUp.classList.remove("show");
+    }
+});
+
+btnUp.onclick = () => {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+};
+
+// Нажатие - возврат в меню
+btnHome.onclick = () => {
+    window.location.href = "index.html";
+};
+
 </script>
+
+    <div id="btnUp" class="floating-btn">⬆</div>
+    <div id="btnHome" class="floating-btn home-btn">Меню</div>
 
 </body>
 </html>
