@@ -3,14 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Way of Lear</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<title>Manga Reader</title>
+https://telegram.org/js/telegram-web-app.js>
+
 <style>
-    body { margin:0; background:#1a1a1a; color:white; font-family:sans-serif; text-align:center; }
-    .container { display:flex; flex-direction:column; align-items:center; width:100%; }
-    img { max-width:100%; margin-bottom:2px; }
-    .nav-buttons { padding:20px; display:flex; gap:10px; justify-content:center; }
-    button { background:#3390ec; border:none; padding:10px 20px; border-radius:8px; color:white; }
+    body {
+        margin:0;
+        background:#1a1a1a;
+        color:white;
+        font-family:sans-serif;
+        text-align:center;
+    }
+
+    .container {
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        width:100%;
+    }
+
+    img {
+        max-width:100%;
+        margin-bottom:2px;
+    }
 
     /* Плавающие кнопки */
     .floating-btn {
@@ -32,13 +47,13 @@
         pointer-events: none;
         transition: opacity .25s ease, transform .25s ease;
         z-index: 3000;
-}
+    }
 
     .floating-btn.show {
         opacity: 1;
         transform: scale(1);
         pointer-events: auto;
-}
+    }
 
     .home-btn {
         width: auto;
@@ -46,9 +61,7 @@
         padding: 12px 18px;
         font-size: 16px;
         border-radius: 10px;
-        background: #3390ec;
-}
-
+    }
 </style>
 </head>
 
@@ -56,17 +69,12 @@
 
 <div id="reader" class="container"></div>
 
-<div class="nav-buttons">
-    <button onclick="window.scrollTo(0,0)">Наверх!</button>
-    <button onclick="tg.close()">Закрыть</button>
-</div>
-
 <script>
 const tg = window.Telegram.WebApp;
 tg.expand();
 
 // ------------------------------
-// Translates DB
+// DB МАНГИ — сюда ВСТАВИШЬ свои ссылки
 // ------------------------------
 const epicDB = {
     lear: {
@@ -139,72 +147,67 @@ const epicDB = {
             "https://i.ibb.co/TDTWjmgN/23.png",
             "https://i.ibb.co/0RM7HnWn/24.png",
             "https://i.ibb.co/1JJmSNgr/25.png"
-
         ]
     }
 };
 
 // ------------------------------
-// Recieving manga ID
+// Получаем ID манги
 // ------------------------------
 const params = new URLSearchParams(window.location.search);
 const mangaId = params.get("manga");
 
 if (!epicDB[mangaId]) {
-    document.body.innerHTML = "<h1>Error: we don't have this here</h1>";
+    document.body.innerHTML = "<h1>Error: No such manga</h1>";
     throw new Error("Unknown manga ID");
 }
 
 const pages = epicDB[mangaId].pages;
 
+// ------------------------------
+// Загружаем страницы
+// ------------------------------
 const reader = document.getElementById("reader");
 
 pages.forEach(src => {
-    let img = document.createElement("img");
+    const img = document.createElement("img");
     img.src = src;
     img.loading = "lazy";
     reader.appendChild(img);
 });
 
 // ------------------------------
-// Floating buttons logic
+// Плавающие кнопки
 // ------------------------------
-const btnUp = document.getElementById("btnUp");
-const btnHome = document.getElementById("btnHome");
-
-// Показать/скрыть кнопки
 window.addEventListener("scroll", () => {
     if (window.scrollY > 250) {
-        // Показать стрелку
         btnUp.classList.add("show");
-
-        // Скрыть меню
         btnHome.classList.remove("show");
     } else {
-        // Показывать кнопку "Меню" наверху страницы
-        btnHome.classList.add("show");
-
-        // Скрывать стрелку
         btnUp.classList.remove("show");
+        btnHome.classList.add("show");
     }
 });
 
+</script>
+
+<!-- Плавающая кнопка вверх -->
+<div id="btnUp" class="floating-btn">⬆</div>
+
+<!-- Плавающая кнопка меню -->
+<div id="btnHome" class="floating-btn home-btn">Меню</div>
+
+<script>
+// кнопка вверх
 btnUp.onclick = () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// Нажатие - возврат в меню
+// кнопка меню
 btnHome.onclick = () => {
     window.location.href = "index.html";
 };
-
 </script>
-
-    <div id="btnUp" class="floating-btn">⬆</div>
-    <div id="btnHome" class="floating-btn home-btn">Меню</div>
 
 </body>
 </html>
