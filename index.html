@@ -94,6 +94,113 @@
         color:#77c8ff;
     }
 
+
+    /* ---------------- LAST.FM NOW PLAYING ------------------- */
+
+    .now-playing {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #222;
+        color: white;
+        padding: 10px 14px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 9999;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity .25s ease, transform .25s ease;
+        font-size: 14px;
+    }
+
+    .now-playing.hidden {
+        opacity: 0;
+        transform: translateY(20px);
+        pointer-events: none;
+    }
+
+    .now-playing img {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .np-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .np-title {
+        font-weight: bold;
+        font-size: 13px;
+        opacity: 0.7;
+    }
+
+    /* ==== NOW PLAYING (Telegram-style) ==== */
+
+    .now-playing-box {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        background: #2b2b2b;
+        color: white;
+        padding: 10px 14px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+        z-index: 9999;
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity .25s ease, transform .25s ease;
+        max-width: 260px;
+        font-size: 14px;
+    }
+
+    .now-playing-box.hidden {
+        opacity: 0;
+        transform: translateY(12px);
+        pointer-events: none;
+    }
+
+    .now-playing-box img {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+        object-fit: cover;
+    }
+
+    .np-meta {
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .np-title {
+        font-weight: 600;
+        margin-bottom: 3px;
+    }
+
+    .np-sub {
+        opacity: 0.7;
+        font-size: 12px;
+    }
+
+    .np-btn {
+        margin-top: 6px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        font-size: 12px;
+        text-align: center;
+        background: #3390ec;
+        color: white;
+        cursor: pointer;
+    }
+
 </style>
 </head>
 
@@ -117,8 +224,19 @@
     </div>
 </div>
 
+<!-- ---- Плашка Last.fm ---- -->
+<div id="nowPlaying" class="now-playing hidden">
+    <img id="npCover">
+    <div class="np-info">
+        <div class="np-title">Сейчас играет</div>
+        <div id="npArtist"></div>
+        <div id="npTrack"></div>
+    </div>
+</div>
+
+
 <script>
-// База данных манги с доп. информацией
+// База данных манги
 const mangaList = [
     {
         id: "lear",
@@ -133,11 +251,11 @@ const mangaList = [
 const grid = document.getElementById("grid");
 const popup = document.getElementById("popup");
 
-// Генерация карточек
 mangaList.forEach((m, index) => {
     let card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = `<img src="${m.cover}" alt="${m.title}">
+    card.innerHTML = `
+        ${m.cover}
         <div class="title">${m.title}</div>
     `;
 
@@ -145,7 +263,6 @@ mangaList.forEach((m, index) => {
     grid.appendChild(card);
 });
 
-// Открытие окошка
 function openPopup(i) {
     const m = mangaList[i];
 
@@ -166,11 +283,112 @@ function openPopup(i) {
     popup.style.display = "flex";
 }
 
-// Закрытие окошка
 function closePopup() {
     popup.style.display = "none";
 }
+
+
+/* ---------------- LAST.FM NOW PLAYING ------------------- */
+
+async function checkNowPlaying() {
+    const username = "Kekichg";
+    const apiKey = "051909ee039c572aafb4285cdef0cfc5";
+
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const track = data.recenttracks.track[0];
+
+        const isPlaying = track['@attr']?.nowplaying === "true";
+
+        const box = document.getElementById("nowPlaying");
+
+        if (!isPlaying) {
+            box.classList.add("hidden");
+            return;
+        }
+
+        // Если играет
+        document.getElementById("npArtist").textContent = track.artist["#text"];
+        document.getElementById("npTrack").textContent = track.name;
+
+        const img = track.image?.[2]?.["#text"] || "";
+        document.getElementById("npCover").src = img;
+
+        box.classList.remove("hidden");
+
+    } catch (err) {
+        console.error("Last.fm error:", err);
+    }
+}
+
+// Первый вызов
+checkNowPlaying();
+
+// Автообновление каждые 30 сек
+setInterval(checkNowPlaying, 30000);
+
+async function updateNowPlaying() {
+    const username = "Kekichg";
+    const apiKey = "051909ee039c572aafb4285cdef0cfc5";
+
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`;
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        const track = data.recenttracks.track[0];
+        const artist = track.artist["#text"];
+        const title = track.name;
+        const cover = track.image?.[3]?.["#text"]; // 300x300
+        const trackUrl = track.url;
+
+        const isPlaying = track['@attr']?.nowplaying === "true";
+
+        const subText = isPlaying
+            ? "Сейчас играет"
+            : track.date?.["#text"] ?? "";
+
+        const box = document.getElementById("nowPlayingBox");
+
+        document.getElementById("npCover").src = cover;
+        document.getElementById("npTitle").textContent = `${artist} — ${title}`;
+        document.getElementById("npSub").textContent = subText;
+
+        const btn = document.getElementById("npBtn");
+        btn.onclick = () => window.open(trackUrl, "_blank");
+
+        // Стили под Telegram Player
+        box.style.background = isPlaying ? "#3a82f7" : "#2b2b2b";
+        box.style.color = "white";
+
+        box.classList.remove("hidden");
+
+    } catch (err) {
+        console.error("Last.fm error:", err);
+    }
+}
+
+// первый запуск
+updateNowPlaying();
+
+// обновление каждые 30 секунд
+setInterval(updateNowPlaying, 30000);
+
 </script>
+
+<div id="nowPlayingBox" class="now-playing-box hidden">
+    <img id="npCover">
+    <div class="np-meta">
+        <div id="npTitle" class="np-title"></div>
+        <div id="npSub" class="np-sub"></div>
+        <div id="npBtn" class="np-btn">Открыть</div>
+    </div>
+</div>
 
 </body>
 </html>
