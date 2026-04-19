@@ -5,167 +5,178 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Epic Reader</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
 <style>
-
     @font-face {
-    font-family: 'TTOctosquares-Medium';
-    src: url('fonts/TTOctosquares-Medium.woff2') format('woff2'),
-         url('fonts/TTOctosquares-Medium.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
+        font-family: 'TTOctosquares-Medium';
+        src: url('fonts/TTOctosquares-Medium.woff2') format('woff2'),
+             url('fonts/TTOctosquares-Medium.ttf') format('truetype');
     }
+    * { font-family: 'TTOctosquares-Medium', sans-serif !important; box-sizing: border-box; }
+    body { margin:0; background:#121212; color:white; }
 
-    body { margin:0; background:#121212; color:white; font-family:TTOctosquares-Medium; }
-    h1 { text-align:center; padding:20px; }
-
-        * {
-    font-family: 'TTOctosquares-Medium', TTOctosquares-Medium !important;
-    }
-
-    .grid {
-        display:grid;
-        grid-template-columns:repeat(auto-fill, minmax(140px,1fr));
-        gap:16px;
-        padding:20px;
-    }
-
-    .card {
-        background:#1e1e1e;
-        border-radius:12px;
-        overflow:hidden;
-        cursor:pointer;
-        transition:.25s;
-    }
-
-    .card:hover {
-        transform:scale(1.05);
-    }
-
-    .card img {
-        width:100%;
-        height:210px;
-        object-fit:cover;
-    }
-
-    .title {
-        padding:10px;
-        text-align:center;
-        font-size:14px;
-    }
-
-    /* ---------------- ВСПЛЫВАШКА ------------------- */
-
-    .popup {
-        position:fixed;
-        inset:0;
-        background:rgba(0,0,0,0.75);
-        display:none;
-        justify-content:center;
-        align-items:center;
-        padding:20px;
-        z-index:100000;
-    }
-
-
-    .popup-content {
-        background:#1e1e1e;
-        border-radius:16px;
-        width: 90%;
-        max-width: 420px;
-        padding:16px;
-        text-align:center;
-        animation:scaleIn .25s ease;
-        box-sizing: border-box;
-        max-height: 90vh;
-        overflow-y: auto;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    
-    .popup-content::-webkit-scrollbar {
-        display: none;
-    }
-
-    @keyframes scaleIn {
-        from { transform:scale(0.85); opacity:0; }
-        to   { transform:scale(1); opacity:1; }
-    }
-
-    .popup img {
-        width: 80%;
-        max-width: 260px;
-        border-radius:12px;
-        margin: 0 auto 12px auto;
-        display: block;
-    }
-
-    .popup button {
-        width:100%;
-        background:#ca61ff;
-        border:none;
-        padding:12px 20px;
-        border-radius:8px;
-        color:white;
-        cursor:pointer;
-        margin-top:10px;
-    }
-
-    .popup .close-btn {
-        background:#444;
-    }
-
-    a {
-        color:#ca61ff;
-    }
-
-
-    /* ---------------- LAST.FM NOW PLAYING ------------------- */
-
-    .now-playing {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #222;
-        color: white;
-        padding: 10px 14px;
-        border-radius: 12px;
+    /* ---- TOP BAR ---- */
+    .topbar {
         display: flex;
         align-items: center;
-        gap: 12px;
-        z-index: 9999;
-        opacity: 1;
-        transform: translateY(0);
-        transition: opacity .25s ease, transform .25s ease;
-        font-size: 14px;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: #181818;
+        border-bottom: 1px solid #2a2a2a;
+        position: sticky;
+        top: 0;
+        z-index: 50;
     }
+    .topbar h1 { margin: 0; font-size: 18px; }
 
-    .now-playing.hidden {
-        opacity: 0;
-        transform: translateY(20px);
-        pointer-events: none;
-    }
-
-    .now-playing img {
-        width: 48px;
-        height: 48px;
+    /* ---- HAMBURGER ---- */
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 6px;
         border-radius: 8px;
-        object-fit: cover;
+        transition: background .2s;
     }
+    .hamburger:hover { background: #2a2a2a; }
+    .hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: #ca61ff;
+        border-radius: 2px;
+        transition: transform .3s, opacity .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    .np-info {
+    /* ---- DRAWER ---- */
+    .drawer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s;
+    }
+    .drawer-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 240px;
+        height: 100%;
+        background: #1a1a1a;
+        z-index: 300;
+        border-right: 1px solid #2e2e2e;
+        transform: translateX(-100%);
+        transition: transform .3s ease;
         display: flex;
         flex-direction: column;
     }
-
-    .np-title {
-        font-weight: bold;
-        font-size: 13px;
-        opacity: 0.7;
+    .drawer.open { transform: translateX(0); }
+    .drawer-header {
+        padding: 20px 16px 14px;
+        font-size: 12px;
+        color: #ca61ff;
+        letter-spacing: 1.5px;
+        border-bottom: 1px solid #2a2a2a;
+    }
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        font-size: 15px;
+        color: #ccc;
+        cursor: pointer;
+        transition: background .2s, color .2s;
+        border-left: 3px solid transparent;
+        text-decoration: none;
+    }
+    .nav-item:hover { background: #222; color: white; }
+    .nav-item.active {
+        color: white;
+        background: rgba(202,97,255,0.12);
+        border-left-color: #ca61ff;
+    }
+    .nav-item .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+    .nav-soon {
+        padding: 14px 18px;
+        font-size: 12px;
+        color: #444;
+        border-top: 1px solid #222;
+        margin-top: auto;
     }
 
-    /* ==== NOW PLAYING ==== */
+    /* ---- GRID ---- */
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px,1fr));
+        gap: 16px;
+        padding: 20px;
+    }
+    .card {
+        background: #1e1e1e;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform .25s;
+    }
+    .card:hover { transform: scale(1.05); }
+    .card img { width: 100%; height: 210px; object-fit: cover; }
+    .title { padding: 10px; text-align: center; font-size: 14px; }
 
+    /* ---- POPUP ---- */
+    .popup {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.75);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        z-index: 100000;
+    }
+    .popup-content {
+        background: #1e1e1e;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 420px;
+        padding: 16px;
+        text-align: center;
+        animation: scaleIn .25s ease;
+        max-height: 90vh;
+        overflow-y: auto;
+        scrollbar-width: none;
+    }
+    .popup-content::-webkit-scrollbar { display: none; }
+    @keyframes scaleIn {
+        from { transform: scale(0.85); opacity: 0; }
+        to   { transform: scale(1); opacity: 1; }
+    }
+    .popup img { width: 80%; max-width: 260px; border-radius: 12px; margin: 0 auto 12px; display: block; }
+    .popup button {
+        width: 100%;
+        background: #ca61ff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+        font-size: 15px;
+    }
+    .popup .close-btn { background: #444; }
+    .popup a { color: #ca61ff; word-break: break-all; }
+    .popup h2 { font-size: 18px; word-wrap: break-word; }
+
+    /* ---- NOW PLAYING ---- */
     .now-playing-box {
         position: fixed;
         bottom: 16px;
@@ -185,36 +196,11 @@
         max-width: 260px;
         font-size: 14px;
     }
-
-    .now-playing-box.hidden {
-        opacity: 0;
-        transform: translateY(12px);
-        pointer-events: none;
-    }
-
-    .now-playing-box img {
-        width: 50px;
-        height: 50px;
-        border-radius: 10px;
-        object-fit: cover;
-    }
-
-    .np-meta {
-        display: flex;
-        flex-direction: column;
-        flex-grow: 1;
-    }
-
-    .np-title {
-        font-weight: 600;
-        margin-bottom: 3px;
-    }
-
-    .np-sub {
-        opacity: 0.7;
-        font-size: 12px;
-    }
-
+    .now-playing-box.hidden { opacity: 0; transform: translateY(12px); pointer-events: none; }
+    .now-playing-box img { width: 50px; height: 50px; border-radius: 10px; object-fit: cover; }
+    .np-meta { display: flex; flex-direction: column; flex-grow: 1; }
+    .np-title { font-weight: 600; margin-bottom: 3px; font-size: 13px; }
+    .np-sub { opacity: 0.7; font-size: 12px; }
     .np-btn {
         margin-top: 6px;
         padding: 6px 10px;
@@ -225,34 +211,12 @@
         color: white;
         cursor: pointer;
     }
-
-        /* Анимация плеера */
-    .np-playing {
-        animation: pulse 1.8s infinite ease-in-out;
-    }
-
+    .np-playing { animation: pulse 1.8s infinite ease-in-out; }
     @keyframes pulse {
         0%   { transform: scale(1); }
         50%  { transform: scale(1.06); }
         100% { transform: scale(1); }
     }
-
-    /* Список последних треков */
-    .np-list {
-        margin-top: 10px;
-        font-size: 12px;
-        opacity: 0.8;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-
-    .np-list-item {
-        display: flex;
-        flex-direction: column;
-    }
-
-
     .np-label {
         position: fixed;
         right: 20px;
@@ -261,56 +225,84 @@
         z-index: 10001;
         transition: opacity .25s ease, transform .25s ease;
     }
-
-
-    .np-label.hidden {
-        opacity: 0;
-        transform: translateY(10px);
-        pointer-events: none;
-        }
-
-        
-    .popup a {
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-        word-break: break-all;
-        display: inline-block;
-        max-width: 100%;
-    }
-    
-    .popup h2 {
-        font-size: 18px;
-        line-height: 1.25;
-        word-wrap: break-word;
-        max-width: 100%;
-    }
-
-
+    .np-label.hidden { opacity: 0; transform: translateY(10px); pointer-events: none; }
 </style>
 </head>
-
 <body>
 
-<h1>+| MAKE YOUR CHOICE |+</h1>
+<!-- TOP BAR -->
+<div class="topbar">
+    <h1>+| EPIC READER |+</h1>
+    <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
+        <span></span><span></span><span></span>
+    </div>
+</div>
 
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer">
+    <div class="drawer-header">+| NAVIGATE |+</div>
+    <a class="nav-item active" href="index.html">
+        <span class="nav-icon">🕮</span> Translates/Переводы
+    </a>
+    <a class="nav-item" href="soundtrack.html">
+        <span class="nav-icon">♪</span> OST/Саундтреки к видео
+    </a>
+    <!-- New pages here: -->
+    <!-- <a class="nav-item" href="yourpage.html"><span class="nav-icon"></span> Page</a> -->
+    <div class="nav-soon">+ more to come...</div>
+</div>
+
+<!-- MANGA GRID -->
 <div class="grid" id="grid"></div>
 
+<!-- POPUP -->
 <div class="popup" id="popup">
     <div class="popup-content" id="popupContent">
         <img id="popupImg">
-
         <h2 id="popupTitle"></h2>
         <p><b>Автор:</b> <span id="popupAuthor"></span></p>
         <p><b>Оригинал:</b> <a id="popupSource" target="_blank"></a></p>
         <p><b>Перевод закончен:</b> <span id="popupDate"></span></p>
-
         <button id="readBtn">Читать!</button>
         <button class="close-btn" onclick="closePopup()">Закрыть</button>
     </div>
 </div>
 
+<!-- NOW PLAYING -->
+<div id="npLabel" class="np-label hidden">+| MY RECENT SONG |+</div>
+<div id="nowPlayingBox" class="now-playing-box hidden">
+    <img id="npCover">
+    <div class="np-meta">
+        <div id="npTitle" class="np-title"></div>
+        <div id="npSub" class="np-sub"></div>
+        <div id="npBtn" class="np-btn">Открыть в Last.fm</div>
+    </div>
+</div>
+
 <script>
-// База данных манги
+const tg = window.Telegram?.WebApp;
+if (tg) tg.expand();
+
+// ---- DRAWER ----
+function toggleDrawer() {
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const hamburger = document.getElementById("hamburger");
+    const isOpen = drawer.classList.contains("open");
+    drawer.classList.toggle("open", !isOpen);
+    overlay.classList.toggle("open", !isOpen);
+    hamburger.classList.toggle("open", !isOpen);
+}
+function closeDrawer() {
+    document.getElementById("drawer").classList.remove("open");
+    document.getElementById("drawerOverlay").classList.remove("open");
+    document.getElementById("hamburger").classList.remove("open");
+}
+
+// ---- MANGA DB ----
 const mangaList = [
     {
         id: "lear",
@@ -320,7 +312,6 @@ const mangaList = [
         source: "https://mojoin.com/comics/224#chapter",
         date: "31.05.2025"
     },
-
     {
         id: "archive",
         title: "Shan-Hai Archive (Архив Шань-Хая)",
@@ -329,155 +320,74 @@ const mangaList = [
         source: "https://shop.redcandlegames.com/event/shanhai9000",
         date: "17.07.2024"
     }
-
 ];
 
 const grid = document.getElementById("grid");
 const popup = document.getElementById("popup");
 
 mangaList.forEach((m, index) => {
-    let card = document.createElement("div");
+    const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = `
-    <img src="${m.cover}" alt="${m.title}">
-    <div class="title">${m.title}</div>
-    `;
-
+    card.innerHTML = `<img src="${m.cover}" alt="${m.title}"><div class="title">${m.title}</div>`;
     card.onclick = () => openPopup(index);
     grid.appendChild(card);
 });
 
 function openPopup(i) {
     const m = mangaList[i];
-
     document.getElementById("popupImg").src = m.cover;
     document.getElementById("popupTitle").textContent = m.title;
     document.getElementById("popupAuthor").textContent = m.author;
-
     const src = document.getElementById("popupSource");
     src.href = m.source;
     src.textContent = m.source;
-
     document.getElementById("popupDate").textContent = m.date;
-
     document.getElementById("readBtn").onclick = () => {
         window.location.href = `reader.html?manga=${m.id}`;
     };
-
     popup.style.display = "flex";
 }
+function closePopup() { popup.style.display = "none"; }
 
-function closePopup() {
-    popup.style.display = "none";
-}
-
-
-/* ---------------- LAST.FM NOW PLAYING ------------------- */
-
+// ---- LAST.FM ----
 async function updateNowPlaying() {
     const username = "Kekichg";
     const apiKey = "051909ee039c572aafb4285cdef0cfc5";
-
     const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=5`;
-
     try {
         const res = await fetch(url);
         const data = await res.json();
-
-        const tracks = data.recenttracks.track;
-        const current = tracks[0];
-
+        const current = data.recenttracks.track[0];
         const artist = current.artist["#text"];
         const title = current.name;
-
-        // Нормальная загрузка обложки (64px)
-        const cover =
-            current.image?.[1]?.["#text"] ||
-            current.image?.[0]?.["#text"] ||
-            "";
-
+        const cover = current.image?.[1]?.["#text"] || current.image?.[0]?.["#text"] || "";
         const trackUrl = current.url;
         const isPlaying = current['@attr']?.nowplaying === "true";
-
-        const subText = isPlaying
-            ? "Сейчас играет"
-            : formatLocalTime(current.date?.uts);
-
+        const subText = isPlaying ? "Сейчас играет" : formatLocalTime(current.date?.uts);
         const box = document.getElementById("nowPlayingBox");
         const label = document.getElementById("npLabel");
         const coverEl = document.getElementById("npCover");
-
-        // Обложка + текст
-        document.getElementById("npCover").src = cover;
+        coverEl.src = cover;
         document.getElementById("npTitle").textContent = `${artist} — ${title}`;
         document.getElementById("npSub").textContent = subText;
-
-        // Кнопка открытия
         document.getElementById("npBtn").onclick = () => window.open(trackUrl, "_blank");
-
-        // Пульсация
-        if (isPlaying) {
-            coverEl.classList.add("np-playing");
-            box.style.background = "#444";
-        } else {
-            coverEl.classList.remove("np-playing");
-            box.style.background = "#2b2b2b";
-        }
-
+        if (isPlaying) { coverEl.classList.add("np-playing"); box.style.background = "#444"; }
+        else { coverEl.classList.remove("np-playing"); box.style.background = "#2b2b2b"; }
         box.classList.remove("hidden");
-label.classList.remove("hidden");
-
-requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-        const boxRect = box.getBoundingClientRect();
-        label.style.bottom = (window.innerHeight - boxRect.top + 15) + "px";
-    });
-
-    });
-
-        const boxRect = box.getBoundingClientRect();
-        label.style.bottom = (window.innerHeight - boxRect.top + 15) + "px";
-
-    } catch (err) {
-        console.error("Last.fm error:", err);
-    }
-
+        label.classList.remove("hidden");
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const boxRect = box.getBoundingClientRect();
+                label.style.bottom = (window.innerHeight - boxRect.top + 15) + "px";
+            });
+        });
+    } catch(err) { console.error("Last.fm error:", err); }
 }
-
-// первый запуск
-updateNowPlaying();
-
-// каждые 30 секунд
-setInterval(updateNowPlaying, 30000);
-
 function formatLocalTime(uts) {
-    const date = new Date(uts * 1000);
-
-    return date.toLocaleString([], {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
+    return new Date(uts * 1000).toLocaleString([], { year:"numeric", month:"short", day:"numeric", hour:"2-digit", minute:"2-digit" });
 }
-
+updateNowPlaying();
+setInterval(updateNowPlaying, 30000);
 </script>
-
-<div id="npLabel" class="np-label hidden">+| MY RECENT SONG |+</div>
-
-<div id="nowPlayingBox" class="now-playing-box hidden">
-    <img id="npCover">
-    <div class="np-meta">
-        <div id="npTitle" class="np-title"></div>
-
-        <div id="npSub" class="np-sub"></div>
-
-        <div id="npList" class="np-list"></div>
-
-        <div id="npBtn" class="np-btn">Открыть в Lasf.fm</div>
-    </div>
-</div>
-
 </body>
 </html>

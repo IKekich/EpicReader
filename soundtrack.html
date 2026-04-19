@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My OST</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+    @font-face {
+        font-family: 'TTOctosquares-Medium';
+        src: url('fonts/TTOctosquares-Medium.woff2') format('woff2'),
+             url('fonts/TTOctosquares-Medium.ttf') format('truetype');
+    }
+    * { font-family: 'TTOctosquares-Medium', sans-serif !important; box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #121212; color: white; }
+
+    /* ---- TOP BAR ---- */
+    .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        background: #181818;
+        border-bottom: 1px solid #2a2a2a;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+    }
+    .topbar h1 { margin: 0; font-size: 18px; }
+    .hamburger {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 8px;
+        transition: background .2s;
+    }
+    .hamburger:hover { background: #2a2a2a; }
+    .hamburger span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: #ca61ff;
+        border-radius: 2px;
+        transition: transform .3s, opacity .3s;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ---- DRAWER ---- */
+    .drawer-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 200;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s;
+    }
+    .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+    .drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 240px;
+        height: 100%;
+        background: #1a1a1a;
+        z-index: 300;
+        border-right: 1px solid #2e2e2e;
+        transform: translateX(-100%);
+        transition: transform .3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-header {
+        padding: 20px 16px 14px;
+        font-size: 12px;
+        color: #ca61ff;
+        letter-spacing: 1.5px;
+        border-bottom: 1px solid #2a2a2a;
+    }
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        font-size: 15px;
+        color: #ccc;
+        cursor: pointer;
+        transition: background .2s, color .2s;
+        border-left: 3px solid transparent;
+        text-decoration: none;
+    }
+    .nav-item:hover { background: #222; color: white; }
+    .nav-item.active { color: white; background: rgba(202,97,255,0.12); border-left-color: #ca61ff; }
+    .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+    .nav-soon { padding: 14px 18px; font-size: 12px; color: #444; border-top: 1px solid #222; margin-top: auto; }
+
+    /* ---- VIDEO LIST ---- */
+    .video-list { display: flex; flex-direction: column; gap: 16px; padding: 20px; }
+
+    .video-card {
+        background: #1e1e1e;
+        border-radius: 14px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform .2s;
+    }
+    .video-card:hover { transform: scale(1.015); }
+
+    .video-thumb {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: #111;
+        overflow: hidden;
+    }
+    .video-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .play-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.3);
+        transition: background .2s;
+    }
+    .video-card:hover .play-overlay { background: rgba(0,0,0,0.15); }
+    .play-circle {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: rgba(202,97,255,0.9);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+    .track-count-badge {
+        position: absolute;
+        bottom: 8px;
+        right: 10px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        font-size: 12px;
+        padding: 3px 8px;
+        border-radius: 6px;
+    }
+
+    .video-info { padding: 12px 14px 14px; }
+    .video-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+    .video-sub { font-size: 12px; color: #888; }
+
+    /* ---- BOTTOM SHEET ---- */
+    .sheet-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.75);
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity .3s;
+    }
+    .sheet-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .bottom-sheet {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #1c1c1c;
+        border-radius: 20px 20px 0 0;
+        z-index: 1001;
+        transform: translateY(100%);
+        transition: transform .35s cubic-bezier(0.32, 0.72, 0, 1);
+        max-height: 88vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .bottom-sheet.open { transform: translateY(0); }
+
+    .sheet-handle {
+        width: 40px;
+        height: 4px;
+        background: #444;
+        border-radius: 2px;
+        margin: 12px auto 0;
+        flex-shrink: 0;
+    }
+    .sheet-header {
+        padding: 12px 16px 10px;
+        border-bottom: 1px solid #2a2a2a;
+        flex-shrink: 0;
+    }
+    .sheet-video-title { font-size: 14px; font-weight: 600; color: #ddd; }
+    .sheet-sub { font-size: 12px; color: #666; margin-top: 2px; }
+
+    .sheet-body { overflow-y: auto; padding: 14px 14px 24px; flex: 1; scrollbar-width: none; }
+    .sheet-body::-webkit-scrollbar { display: none; }
+
+    /* ---- TRACKS GRID ---- */
+    .tracks-section-title {
+        font-size: 12px;
+        color: #ca61ff;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+    }
+    .tracks-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .track-card {
+        background: #262626;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform .2s, outline .15s;
+        outline: 2px solid transparent;
+    }
+    .track-card.selected {
+        outline: 2px solid #ca61ff;
+        transform: scale(1.06);
+    }
+    .track-cover {
+        width: 100%;
+        aspect-ratio: 1;
+        overflow: hidden;
+        background: #1a1a1a;
+    }
+    .track-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .track-name {
+        padding: 5px 6px 6px;
+        font-size: 10px;
+        color: #bbb;
+        line-height: 1.3;
+        text-align: center;
+    }
+
+    /* ---- PLATFORM BUTTONS ---- */
+    .platforms-section {
+        background: #222;
+        border-radius: 14px;
+        padding: 14px;
+        display: none;
+    }
+    .platforms-section.visible { display: block; }
+    .platforms-title {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 10px;
+    }
+    .plat-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 11px 14px;
+        border: none;
+        border-radius: 10px;
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        margin-bottom: 8px;
+        text-decoration: none;
+        transition: filter .2s;
+    }
+    .plat-btn:hover { filter: brightness(1.15); }
+    .plat-btn:last-child { margin-bottom: 0; }
+    .plat-btn.spotify { background: #1db954; }
+    .plat-btn.deezer { background: #d313e4; }
+    .plat-btn.youtube { background: #ff0000; }
+    .plat-btn-icon { font-size: 18px; }
+    .plat-btn.disabled { background: #333; color: #666; cursor: default; pointer-events: none; }
+
+    .close-sheet-btn {
+        display: block;
+        width: 100%;
+        margin-top: 12px;
+        padding: 11px;
+        background: #2e2e2e;
+        border: none;
+        border-radius: 10px;
+        color: #aaa;
+        font-size: 14px;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <h1> +| MY OST |+</h1>
+    <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
+        <span></span><span></span><span></span>
+    </div>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+    <div class="drawer-header">+| NAVIGATE |+</div>
+    <a class="nav-item" href="index.html"><span class="nav-icon">🕮</span> Translates/Переводы</a>
+    <a class="nav-item active" href="soundtrack.html"><span class="nav-icon">♪</span> OST/Саундтреки к видео</a>
+    <!-- <a class="nav-item" href="yourpage.html"><span class="nav-icon">⭐</span> Страница</a> -->
+    <div class="nav-soon">+ more to come...</div>
+</div>
+
+<!-- VIDEO LIST -->
+<div class="video-list" id="videoList"></div>
+
+<!-- BOTTOM SHEET -->
+<div class="sheet-overlay" id="sheetOverlay" onclick="closeSheet()"></div>
+<div class="bottom-sheet" id="bottomSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header">
+        <div class="sheet-video-title" id="sheetTitle"></div>
+        <div class="sheet-sub" id="sheetSub"></div>
+    </div>
+    <div class="sheet-body">
+        <div class="tracks-section-title">+| ТРЕКИ В ВИДЕО |+</div>
+        <div class="tracks-grid" id="tracksGrid"></div>
+
+        <div class="platforms-section" id="platformsSection">
+            <div class="platforms-title">Открыть на платформе:</div>
+            <div id="platformButtons"></div>
+        </div>
+
+        <button class="close-sheet-btn" onclick="closeSheet()">Закрыть</button>
+    </div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+if (tg) tg.expand();
+
+// ================================================================
+// DB of videos and tracks
+// ================================================================
+const videoDB = [
+
+    {
+        id: "video1",
+        title: "Почему первая глава Fortnite - худшая?",               // video name
+        description: "Моё первое серьёзное видео",         // description
+        thumbnail: "https://i.ibb.co/vCCXnG3Z/image-2023-11-10-15-47-07.png", // yt thumbnail
+        tracks: [
+            {
+                name: "Claude Debussy - Claire de Lune",              // track name
+                cover: "https://i.ibb.co/9kk0626q/2026-04-19-021241862.png",  // square thumbnail
+                platforms: {
+                    deezer:    "https://link.deezer.com/s/3321DUyacGtlYiYff1PTz",   // if link is null, button for this platform will be hidden
+                    spotify:    "https://open.spotify.com/track/5swzgKvZII0cKO3x3Sh3dM?si=26c2370537224f77",
+                    youtube:    "https://www.youtube.com/watch?v=WNcsUNKlAKw"
+                }
+            },
+            {
+                name: "Shuichi Kobori - The Hideout (808 mix)",
+                cover: "https://i.ibb.co/9kd3bfpg/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/3321PdTvCMgV30bJ5Mj48",
+                    spotify:    "https://open.spotify.com/track/21Q5Nvne0qScvRjelomQMt?si=4ab9d18fc1b44850",
+                    youtube:    "https://music.youtube.com/watch?v=f24z3_TOQtk&si=tljfsQHuiqhEmfRm"
+                }
+            },
+            {
+                name: "Shuichi Kobori - Jam Session",
+                cover: "https://i.ibb.co/C5TRswwb/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/3321WWGJAwwrPi0BnKh5G",
+                    spotify:    "https://open.spotify.com/track/079axBGJRE4TzMvN5yOh0q?si=b27a6fc65bd24c88",
+                    youtube:    "https://music.youtube.com/watch?v=5fBP_iFH9gA&si=B98b3BLEkNWUrAW9"
+                }
+            },
+            {
+                name: "Toby Fox - Lancer",
+                cover: "https://i.ibb.co/RpLwwRvM/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/3321ZA7j4z09eI6dwHPVU",
+                    spotify:    "https://open.spotify.com/track/2uE9ZTSf2wJINqCHOrV6a0?si=c0ece84d7ed344f8",
+                    youtube:    "https://www.youtube.com/watch?v=GAhBQH0Kf1I"
+                }
+            },
+            {
+                name: "Reo - Through the Halls of History",
+                cover: "https://i.ibb.co/9kd3bfpg/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33223KFUl4MvA1qCWpDNU",
+                    spotify:    "https://open.spotify.com/track/0cGjsrwTEYVowk8HTyJ43a?si=5d7c348a74714b31",
+                    youtube:    "https://music.youtube.com/watch?v=ADSizzKjIYQ&si=cGiC1JZ6__Xknm6V"
+                }
+            },
+            {
+                name: "Chris Christodoulou - The Rain Formerly Known as Purple",
+                cover: "https://i.ibb.co/HLfTY1Cj/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/3322dUxjMwY9JgDsKMENb",
+                    spotify:    "https://open.spotify.com/track/46UeCcAKHWJhrfzMTabT7a?si=0025d05351204803",
+                    youtube:    "https://music.youtube.com/watch?v=Io_yUfZQ2v4&si=yyyM35266JcdjDXD"
+                }
+            },
+            {
+                name: "Chipper Hammond - Trainpocalypse",
+                cover: "https://i.ibb.co/WpGXrQ1d/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/3322gB4dgeeTVuM3zQcND",
+                    spotify:    "https://open.spotify.com/track/3AdmJ2k7KmHtU1VHn62Rrk?si=5d5afbf6a60c4574",
+                    youtube:    "https://music.youtube.com/watch?v=Kqd4xSJjsAQ&si=pwTPwdYohpOynLXq"
+                }
+            },
+            {
+                name: "Shuichi Kobori - The RUSH",
+                cover: "https://i.ibb.co/9kd3bfpg/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/3322myMXg6gkNJOQNLezx",
+                    spotify:    "https://open.spotify.com/track/6bJdrc2kj57R5K4WBJZWXy?si=05259c2e710c4271",
+                    youtube:    "https://music.youtube.com/watch?v=sWXDBNLQDB8&si=JsOLPfXMQ2e8NVEJ"
+                }
+            }
+            // tracks go here
+        ]
+    },
+
+    {
+        id: "video2",
+        title: "Пока что в процессе написания",
+        description: "Описание",
+        thumbnail: "https://ССЫЛКА_НА_ПРЕВЬЮ_ВИДЕО.jpg",
+        tracks: [
+            {
+                name: "Artist — Track Name",
+                cover: "https://ССЫЛКА_НА_ОБЛОЖКУ.jpg",
+                platforms: {
+                    spotify:    null,
+                    youtube:    "https://youtu.be/..."
+                }
+            }
+        ]
+    }
+
+    // New videos go here
+];
+
+// ================================================================
+
+const PLATFORMS_CONFIG = [
+    { key: "deezer",     label: "Deezer",        class: "deezer",     icon: "❤︎⁠" },
+    { key: "spotify",    label: "Spotify",       class: "spotify",    icon: "၊||၊" },
+    { key: "youtube",    label: "YouTube Music",  class: "youtube",    icon: "▶" }
+];
+
+// ---- Video render ----
+const videoList = document.getElementById("videoList");
+videoDB.forEach((video, idx) => {
+    const card = document.createElement("div");
+    card.className = "video-card";
+    card.innerHTML = `
+        <div class="video-thumb">
+            <img src="${video.thumbnail}" alt="${video.title}" onerror="this.style.background='#1a1a1a'; this.style.display='none'">
+            <div class="play-overlay">
+                <div class="play-circle">▶</div>
+            </div>
+            <div class="track-count-badge">♪ ${video.tracks.length} трек${tracksWord(video.tracks.length)}</div>
+        </div>
+        <div class="video-info">
+            <div class="video-title">${video.title}</div>
+            <div class="video-sub">${video.description}</div>
+        </div>
+    `;
+    card.onclick = () => openSheet(idx);
+    videoList.appendChild(card);
+});
+
+function tracksWord(n) {
+    if (n % 100 >= 11 && n % 100 <= 19) return "ов";
+    const r = n % 10;
+    if (r === 1) return "";
+    if (r >= 2 && r <= 4) return "а";
+    return "ов";
+}
+
+// ---- Bottom Sheet ----
+let selectedTrack = null;
+
+function openSheet(videoIdx) {
+    const video = videoDB[videoIdx];
+    selectedTrack = null;
+
+    document.getElementById("sheetTitle").textContent = video.title;
+    document.getElementById("sheetSub").textContent = `${video.tracks.length} трек${tracksWord(video.tracks.length)} в этом видео`;
+
+    const grid = document.getElementById("tracksGrid");
+    grid.innerHTML = "";
+    video.tracks.forEach((track, i) => {
+        const card = document.createElement("div");
+        card.className = "track-card";
+        card.id = `track-${i}`;
+        card.innerHTML = `
+            <div class="track-cover">
+                <img src="${track.cover}" alt="${track.name}" onerror="this.parentElement.style.background='#2a2a2a'">
+            </div>
+            <div class="track-name">${track.name}</div>
+        `;
+        card.onclick = () => selectTrack(i, track);
+        grid.appendChild(card);
+    });
+
+    // Hide platforms
+    document.getElementById("platformsSection").classList.remove("visible");
+    document.getElementById("platformButtons").innerHTML = "";
+
+    document.getElementById("sheetOverlay").classList.add("open");
+    document.getElementById("bottomSheet").classList.add("open");
+}
+
+function selectTrack(idx, track) {
+
+    document.querySelectorAll(".track-card").forEach(c => c.classList.remove("selected"));
+    document.getElementById(`track-${idx}`).classList.add("selected");
+    selectedTrack = track;
+
+    // Show buttons
+    const section = document.getElementById("platformsSection");
+    const btns = document.getElementById("platformButtons");
+    btns.innerHTML = "";
+
+    let hasAny = false;
+    PLATFORMS_CONFIG.forEach(p => {
+        const url = track.platforms?.[p.key];
+        if (!url) return;
+        hasAny = true;
+        const btn = document.createElement("a");
+        btn.className = `plat-btn ${p.class}`;
+        btn.href = url;
+        btn.target = "_blank";
+        btn.rel = "noopener noreferrer";
+        btn.innerHTML = `<span class="plat-btn-icon">${p.icon}</span> ${p.label}`;
+        btns.appendChild(btn);
+    });
+
+    if (!hasAny) {
+        btns.innerHTML = `<div style="color:#666;font-size:13px;text-align:center;padding:8px 0;">Ссылки не добавлены</div>`;
+    }
+
+    section.classList.add("visible");
+
+    // Scroll to the buttons
+    setTimeout(() => section.scrollIntoView({ behavior: "smooth", block: "nearest" }), 100);
+}
+
+function closeSheet() {
+    document.getElementById("sheetOverlay").classList.remove("open");
+    document.getElementById("bottomSheet").classList.remove("open");
+}
+
+// ---- Drawer ----
+function toggleDrawer() {
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const hamburger = document.getElementById("hamburger");
+    const isOpen = drawer.classList.contains("open");
+    drawer.classList.toggle("open", !isOpen);
+    overlay.classList.toggle("open", !isOpen);
+    hamburger.classList.toggle("open", !isOpen);
+}
+function closeDrawer() {
+    document.getElementById("drawer").classList.remove("open");
+    document.getElementById("drawerOverlay").classList.remove("open");
+    document.getElementById("hamburger").classList.remove("open");
+}
+</script>
+</body>
+</html>
