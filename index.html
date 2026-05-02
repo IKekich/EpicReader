@@ -218,15 +218,7 @@
         50%  { transform: scale(1.06); }
         100% { transform: scale(1); }
     }
-    .np-label {
-        position: fixed;
-        right: 20px;
-        color: #aaa;
-        font-size: 13px;
-        z-index: 10001;
-        transition: opacity .25s ease, transform .25s ease;
-    }
-    .np-label.hidden { opacity: 0; transform: translateY(10px); pointer-events: none; }
+
 </style>
 </head>
 <body>
@@ -276,13 +268,15 @@
 </div>
 
 <!-- NOW PLAYING -->
-<div id="npLabel" class="np-label hidden">+| MY RECENT SONG |+</div>
-<div id="nowPlayingBox" class="now-playing-box hidden">
-    <img id="npCover">
-    <div class="np-meta">
-        <div id="npTitle" class="np-title"></div>
-        <div id="npSub" class="np-sub"></div>
-        <div id="npBtn" class="np-btn">Открыть в Last.fm</div>
+<div style="position: fixed; bottom: 16px; right: 16px; z-index: 9999;">
+    <div style="font-size:12px; color:#aaa; white-space:nowrap; text-align:right; margin-bottom:6px;">+| MY RECENT SONG |+</div>
+    <div id="nowPlayingBox" class="now-playing-box hidden" style="position: static;">
+        <img id="npCover">
+        <div class="np-meta">
+            <div id="npTitle" class="np-title"></div>
+            <div id="npSub" class="np-sub"></div>
+            <div id="npBtn" class="np-btn">Открыть в Last.fm</div>
+        </div>
     </div>
 </div>
 
@@ -367,6 +361,7 @@ async function updateNowPlaying() {
     const apiKey = "051909ee039c572aafb4285cdef0cfc5";
     const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=5`;
     try {
+
         const res = await fetch(url);
         const data = await res.json();
         const current = data.recenttracks.track[0];
@@ -377,7 +372,6 @@ async function updateNowPlaying() {
         const isPlaying = current['@attr']?.nowplaying === "true";
         const subText = isPlaying ? "Сейчас играет" : formatLocalTime(current.date?.uts);
         const box = document.getElementById("nowPlayingBox");
-        const label = document.getElementById("npLabel");
         const coverEl = document.getElementById("npCover");
         coverEl.src = cover;
         document.getElementById("npTitle").textContent = `${artist} — ${title}`;
@@ -386,13 +380,7 @@ async function updateNowPlaying() {
         if (isPlaying) { coverEl.classList.add("np-playing"); box.style.background = "#444"; }
         else { coverEl.classList.remove("np-playing"); box.style.background = "#2b2b2b"; }
         box.classList.remove("hidden");
-        label.classList.remove("hidden");
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                const boxRect = box.getBoundingClientRect();
-                label.style.bottom = (window.innerHeight - boxRect.top + 15) + "px";
-            });
-        });
+
     } catch(err) { console.error("Last.fm error:", err); }
 }
 function formatLocalTime(uts) {

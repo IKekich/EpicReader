@@ -160,6 +160,15 @@
     .video-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
     .video-sub { font-size: 12px; color: #888; }
 
+    a.video-title {
+    color: white;
+    text-decoration: none;
+    }
+        a.video-title:hover {
+    color: #ca61ff;
+    text-decoration: underline;
+    }
+
     /* ---- BOTTOM SHEET ---- */
     .sheet-overlay {
         position: fixed;
@@ -327,6 +336,19 @@
 </div>
 
 <!-- VIDEO LIST -->
+
+<div style="padding: 14px 20px 0; display:flex; justify-content:flex-end;">
+    <button id="sortBtn" onclick="toggleSort()" style="
+        background: #1e1e1e;
+        border: 1px solid #333;
+        color: #ccc;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        cursor: pointer;
+    ">+| NEW FIRST |+</button>
+</div>
+
 <div class="video-list" id="videoList"></div>
 
 <!-- BOTTOM SHEET -->
@@ -362,8 +384,10 @@ const videoDB = [
     {
         id: "video1",
         title: "Почему первая глава Fortnite - худшая?",               // video name
+        date: "2023-11-11",
         description: "Моё первое серьёзное видео",         // description
         thumbnail: "https://i.ibb.co/vCCXnG3Z/image-2023-11-10-15-47-07.png", // yt thumbnail
+        url: "https://www.youtube.com/watch?v=97It-G5XYvo", //yt link
         tracks: [
             {
                 name: "Claude Debussy - Claire de Lune",              // track name
@@ -443,16 +467,199 @@ const videoDB = [
 
     {
         id: "video2",
-        title: "Пока что в процессе написания",
-        description: "Описание",
-        thumbnail: "https://ССЫЛКА_НА_ПРЕВЬЮ_ВИДЕО.jpg",
+        title: "Как Fortnite чуть не умер",
+        date: "2023-11-20",
+        description: "В этом видео я рассказал об ужасном первом обновлении сезона КАК РАНЬШЕ в Fortnite",
+        thumbnail: "https://i.ibb.co/bgjm50bD/image-2023-11-17-21-10-49.png",
+        url: "https://youtu.be/UZNCsYnSf3Y?si=0eUgfo-HUNFIofPg",
         tracks: [
             {
-                name: "Artist — Track Name",
-                cover: "https://ССЫЛКА_НА_ОБЛОЖКУ.jpg",
+                name: "ludoWic - Breath of a Serpent",
+                cover: "https://i.ibb.co/tPkbCMYB/image.png",
                 platforms: {
+                    deezer:   "https://link.deezer.com/s/339WSdLCP42bkmEvwS9v7",
+                    spotify:    "https://open.spotify.com/track/4mvJuUedjCOL6fFp3inK2R?si=f459adc650954e4d",
+                    youtube:    "https://music.youtube.com/watch?v=faZEYN4KHx0&si=q0gdQu4XQeF63XeU"
+                }
+            },
+
+            {
+                name: "The Price is Right theme song",
+                cover: "https://i.ibb.co/tTFTzsQy/image.png",
+                platforms: {
+                    deezer:   null,
                     spotify:    null,
-                    youtube:    "https://youtu.be/..."
+                    youtube:    "https://www.youtube.com/watch?v=13tnjh3dZw4"
+                }
+            },
+
+            {
+                name: "penis music",
+                cover: "https://i.ibb.co/vCfTnYpM/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://www.youtube.com/watch?v=226uRm2hqtE"
+                }
+            },
+
+            {
+                name: "Daniel Deluxe - Blood and Steel",
+                cover: "https://i.ibb.co/1GTyRZ0q/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339X44NY7rsJtzQO1FCvg",
+                    spotify:    "https://open.spotify.com/track/3xtySJF8p0GiNhSJE5TZTY?si=54db407f2ba2490d",
+                    youtube:    "https://music.youtube.com/watch?v=Ra_RlAGV_M8&si=QGB8J-_ynzAIIuIn"
+                }
+            },
+
+            {
+                name: "Circus Theme",
+                cover: "https://i.ibb.co/XfyF5fhM/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://www.youtube.com/watch?v=NNv2RHR62Rs"
+                }
+            }
+        ]
+    },
+
+    {
+        id: "video3",
+        title: "НАША ЧЕСТНАЯ РЕАКЦИЯ НА ПЯТУЮ ГЛАВУ FORTNITE",
+            date: "2023-12-04",
+        description: "Хихихаха",
+        thumbnail: "https://i.ibb.co/RpKSxtL1/image.png",
+        url: "https://youtu.be/RpEUXGNMELs?si=jvZBWLj1b6sVjvS7",
+        tracks: [
+            {
+                name: "まもるクンは呪われてしまった！YO-KAI Disco",
+                cover: "https://i.ibb.co/C5gqhhJ7/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://www.youtube.com/watch?v=A2ZoG_rBjBs"
+                }
+            }
+        ]
+    },
+
+        {
+        id: "video4",
+        title: "Project Nova - Жалкий подражатель Fortnite",
+        date: "2023-12-22",
+        description: "В этом видео я рассказал о Project Nova",
+        thumbnail: "https://i.ibb.co/nsLTW87r/image-2023-12-23-03-05-27.png",
+        url: "https://youtu.be/6gOYJOvo9zA?si=AN7ns_aRidOxfxBe",
+        tracks: [
+            {
+                name: "Machine Girl - Virtual Paradise",
+                cover: "https://i.ibb.co/tPxSjdhq/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339XjGzvIpgJSAGZ6JYT5",
+                    spotify:    "https://open.spotify.com/track/31sutmiNUEqTQ2hV6y9NgA?si=6fce23faba514d9b",
+                    youtube:    "https://music.youtube.com/watch?v=7alzMkyaL0I&si=6j4m2iIoNt4scDiS"
+                }
+            },
+
+            {
+                name: "Machine Girl - Vainglorious Chorus",
+                cover: "https://i.ibb.co/tPxSjdhq/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339XkJ7KHapmhr9dXGP4w",
+                    spotify:    "https://open.spotify.com/track/3FLB3fPamSkdhHNK4vEDZl?si=747f2fd0ca264834",
+                    youtube:    "https://music.youtube.com/watch?v=Wf4CF2mfs4k&si=wR6_luzpVCIL5mQH"
+                }
+            },
+
+            {
+                name: "The Price is Right theme song",
+                cover: "https://i.ibb.co/tTFTzsQy/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://www.youtube.com/watch?v=13tnjh3dZw4"
+                }
+            },
+
+            {
+                name: "Machine Girl - Glass Ocean",
+                cover: "https://i.ibb.co/tPxSjdhq/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339XnyC5rurqlZqMyeVwb",
+                    spotify:    "https://open.spotify.com/track/3ln8UwzwD6drzKappYDESb?si=18dbd436365f43b4",
+                    youtube:    "https://music.youtube.com/watch?v=f8Kjn9qw-rw&si=n-AIoi7eICrSTaAM"
+                }
+            },
+
+            {
+                name: "Machine Girl - Heaven Central",
+                cover: "https://i.ibb.co/g18CDMS/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339Xrw7BCL0f20KB9OIkU",
+                    spotify:    "https://open.spotify.com/track/0YpDwCUjgaz1TokRzau82z?si=a9a3e9739d16495d",
+                    youtube:    "https://music.youtube.com/watch?v=tk-S5coVorQ&si=OyPYdKjwv-07PLov"
+                }
+            },
+
+            {
+                name: "Machine Girl - Heaven Central",
+                cover: "https://i.ibb.co/g18CDMS/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339Xrw7BCL0f20KB9OIkU",
+                    spotify:    "https://open.spotify.com/track/0YpDwCUjgaz1TokRzau82z?si=a9a3e9739d16495d",
+                    youtube:    "https://music.youtube.com/watch?v=tk-S5coVorQ&si=OyPYdKjwv-07PLov"
+                }
+            }
+        ]
+    },
+
+    {
+        id: "video5",
+        title: "Критическая стереография: DeadP47",
+        date: "2024-01-31",
+        description: "Видео которое я сделал чисто для того чтобы дед его посмотрел у себя на стриме, и у меня получилось (ссылка с таймкодом): https://www.youtube.com/live/55NKZp7nDrM?si=VfvGrf-uImFIXoye&t=9091",
+        thumbnail: "https://i.ibb.co/fVcN8TNz/47.png",
+        url: "https://youtu.be/RaWQFLqp7q8?si=gzViYM7SfK-LFqRK",
+        tracks: [
+            {
+                name: "Machine Girl - Suncoast Suite",
+                cover: "https://i.ibb.co/g18CDMS/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339XQAvEYrPP4UdCV7Awa",
+                    spotify:    "https://open.spotify.com/track/1Vgelw5Xpc33LlhI7pg8P8?si=51997e59c1f34136",
+                    youtube:    "https://music.youtube.com/watch?v=9tuGXaMDFQE&si=paCFyGVctYWzcyE5"
+                }
+            },
+
+            {
+                name: "Machine Girl - Bloody Sneakers",
+                cover: "https://i.ibb.co/g18CDMS/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339XTy6dCmhI2HD5InF0A",
+                    spotify:    "https://open.spotify.com/track/5UNlr5NiYJhZi16TGLTIgi?si=4e4e01ec562341cc",
+                    youtube:    "https://music.youtube.com/watch?v=oW3KnzQHYmU&si=7stdy5HlNqfpsX_E"
+                }
+            },
+
+            {
+                name: "Machine Girl - Dispatch",
+                cover: "https://i.ibb.co/g18CDMS/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339XVhcgU4pGPsLKHGuXF",
+                    spotify:    "https://open.spotify.com/track/0jlPZkFUDNYKjJKyvYezal?si=4314535a002d416a",
+                    youtube:    "https://music.youtube.com/watch?v=vEEFYi0SLNI&si=OPgZRwFSgDcqaObF"
+                }
+            },
+
+            {
+                name: "The Price is Right theme song",
+                cover: "https://i.ibb.co/tTFTzsQy/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://www.youtube.com/watch?v=13tnjh3dZw4"
                 }
             }
         ]
@@ -469,28 +676,6 @@ const PLATFORMS_CONFIG = [
     { key: "youtube",    label: "YouTube Music",  class: "youtube",    icon: "▶" }
 ];
 
-// ---- Video render ----
-const videoList = document.getElementById("videoList");
-videoDB.forEach((video, idx) => {
-    const card = document.createElement("div");
-    card.className = "video-card";
-    card.innerHTML = `
-        <div class="video-thumb">
-            <img src="${video.thumbnail}" alt="${video.title}" onerror="this.style.background='#1a1a1a'; this.style.display='none'">
-            <div class="play-overlay">
-                <div class="play-circle">▶</div>
-            </div>
-            <div class="track-count-badge">♪ ${video.tracks.length} трек${tracksWord(video.tracks.length)}</div>
-        </div>
-        <div class="video-info">
-            <div class="video-title">${video.title}</div>
-            <div class="video-sub">${video.description}</div>
-        </div>
-    `;
-    card.onclick = () => openSheet(idx);
-    videoList.appendChild(card);
-});
-
 function tracksWord(n) {
     if (n % 100 >= 11 && n % 100 <= 19) return "ов";
     const r = n % 10;
@@ -498,6 +683,54 @@ function tracksWord(n) {
     if (r >= 2 && r <= 4) return "а";
     return "ов";
 }
+
+let sortOrder = "new";
+
+function toggleSort() {
+    sortOrder = sortOrder === "new" ? "old" : "new";
+    document.getElementById("sortBtn").textContent =
+        sortOrder === "new" ? "+| NEW FIRST |+" : "+| OLD FIRST |+";
+    renderVideos();
+}
+
+function renderVideos() {
+    const videoList = document.getElementById("videoList");
+    videoList.innerHTML = "";
+
+    const sorted = [...videoDB].sort((a, b) =>
+        sortOrder === "new"
+            ? new Date(b.date) - new Date(a.date)
+            : new Date(a.date) - new Date(b.date)
+    );
+
+    sorted.forEach((video) => {
+        const realIdx = videoDB.indexOf(video);
+        const card = document.createElement("div");
+        card.className = "video-card";
+        card.innerHTML = `
+            <div class="video-thumb">
+                <img src="${video.thumbnail}" alt="${video.title}" onerror="this.style.background='#1a1a1a'; this.style.display='none'">
+                <div class="play-overlay">
+                    <div class="play-circle">▶</div>
+                </div>
+                <div class="track-count-badge">♪ ${video.tracks.length} трек${tracksWord(video.tracks.length)}</div>
+            </div>
+            <div class="video-info">
+                ${video.url
+                    ? `<a class="video-title" href="${video.url}" target="_blank" rel="noopener noreferrer">${video.title}</a>`
+                    : `<div class="video-title">${video.title}</div>`}
+                <div class="video-sub">${video.description}</div>
+            </div>
+        `;
+        card.onclick = (e) => {
+            if (e.target.classList.contains("video-title")) return;
+            openSheet(realIdx);
+        };
+        videoList.appendChild(card);
+    });
+}
+
+renderVideos();
 
 // ---- Bottom Sheet ----
 let selectedTrack = null;
