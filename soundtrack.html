@@ -320,7 +320,7 @@
 <!-- TOP BAR -->
 <div class="topbar">
     <h1 style="display:flex; align-items:center; gap:10px;">
-    <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/logo%20trans.ico" style="width:32px; height:32px; border-radius:6px;">
+    <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/logo%20trans.ico" loading="lazy" decoding="async" style="width:32px; height:32px; border-radius:6px;">
     +| MY OST |+
 </h1>
     <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
@@ -335,10 +335,10 @@
     <div class="drawer-header">+| NAVIGATE |+</div>
 
     <a class="nav-item" href="index.html">
-        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/bookwhite.png" style="width:20px; height:20px;"> </span> Translates/Переводы
+        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/bookwhite.png" loading="lazy" decoding="async" style="width:20px; height:20px;"> </span> Translates/Переводы
     </a>
     <a class="nav-item active" href="soundtrack.html">
-        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/notewhite.png" style="width:20px; height:20px;"> </span> OST/Саундтреки к видео
+        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/notewhite.png" loading="lazy" decoding="async" style="width:20px; height:20px;"> </span> OST/Саундтреки к видео
     </a>
 
     <!-- <a class="nav-item" href="yourpage.html"><span class="nav-icon">⭐</span> Страница</a> -->
@@ -673,12 +673,204 @@ const videoDB = [
                 }
             }
         ]
+    },
+
+    {
+        id: "video6",
+        title: "Немедленно попробуй MULLET MAD JACK",
+        date: "2024-02-20",
+        description: "Мой первый обзор на игру",
+        thumbnail: "https://i.ibb.co/ychtfHS2/mulletmadjack.png",
+        url: "https://youtu.be/MdqcgBgfC9M",
+        tracks: [
+            {
+                name: "Lotus Juice - Iwatodai Dorm -Reload-",
+                cover: "https://i.ibb.co/JWvDXtyt/2026-05-05-210224583.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339XQAvEYrPP4UdCV7Awa",
+                    spotify:    "https://open.spotify.com/track/3uekHQtWNzxkcU6eNn16fv?si=cbb6e506c964485a",
+                    youtube:    "https://music.youtube.com/watch?v=Cj-FrFI0qnM&si=D3XPprFrRDgniW_Z"
+                }
+            },
+
+            {
+                name: "The Price is Right theme song",
+                cover: "https://i.ibb.co/tTFTzsQy/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://www.youtube.com/watch?v=13tnjh3dZw4"
+                }
+            },
+
+            {
+                name: "Daniel Deluxe - Blood and Steel",
+                cover: "https://i.ibb.co/1GTyRZ0q/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/339X44NY7rsJtzQO1FCvg",
+                    spotify:    "https://open.spotify.com/track/3xtySJF8p0GiNhSJE5TZTY?si=54db407f2ba2490d",
+                    youtube:    "https://music.youtube.com/watch?v=Ra_RlAGV_M8&si=QGB8J-_ynzAIIuIn"
+                }
+            },
+
+            {
+                name: "Daniel Deluxe - Truth to Power",
+                cover: "https://i.ibb.co/1GTyRZ0q/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bAKHF3Itl54bCQ1qPvJ",
+                    spotify:    "https://open.spotify.com/track/6O72Ao6kORIi0Ky2nl58Rx?si=1df5b65682684872",
+                    youtube:    "https://music.youtube.com/watch?v=qTsZ6DWIwHQ&si=nexWe24HARq9Z_pr"
+                }
+            },
+
+            {
+                name: "We Are Magonia - Human Like Feathers",
+                cover: "https://i.ibb.co/SX2SPzrq/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bAOGVQO5ojIxnBoPhMG",
+                    spotify:    "https://open.spotify.com/track/2W8RFTwkoWP6cYBWXSIlus?si=387180a980dc45ae",
+                    youtube:    "https://music.youtube.com/watch?v=BNGsQTKR9tc&si=2fpBFztEB6d5C9l1"
+                }
+            },
+
+            {
+                name: "Fernando Pepe, Mateus Polati - Jack the Mullet Mad",
+                cover: "https://i.ibb.co/Gv50Mbpv/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bARYiBXI2B2icvstZgu",
+                    spotify:    "https://open.spotify.com/track/41NdrKFT1JXGw0PBuPHiUl?si=19ad30ebe1514522",
+                    youtube:    "https://music.youtube.com/watch?v=y0ZYyhvb87s&si=tXG-m2jd5UrvyNan"
+                }
+            },
+
+            {
+                name: "Oxxxymiron, Пиэм, DINAST, J. MAKONNEN, LeTai, Palmdropov - Reality",
+                cover: "https://i.ibb.co/DDdP6F6G/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://music.youtube.com/watch?v=5lJH_GF8i8o&si=z8TgMbKnW-7y8HCS"
+                }
+            }
+
+            
+        ]
+    },
+
+    {
+        id: "video7",
+        title: "НАША ЧЕСТНАЯ РЕАКЦИЯ НА 2 СЕЗОН 5 ГЛАВЫ FORTNITE (Лучший сезон?)",
+        date: "2024-03-11",
+        description: "Хихихаха 2",
+        thumbnail: "https://i.ibb.co/sJwC0s4R/image.png",
+        url: "https://youtu.be/F1bcvt-y8q8",
+        tracks: [
+            {
+                name: "Neco-arc backrooms party Linkin Park CHAMPETA deluxe edition",
+                cover: "https://i.ibb.co/gFdnwMCs/image.png",
+                platforms: {
+                    deezer:   null,
+                    spotify:    null,
+                    youtube:    "https://www.youtube.com/watch?v=oEaxtAjDzd4"
+                }
+            },
+
+            {
+                name: "Tee Lopes - Lights, Camera, Action!",
+                cover: "https://i.ibb.co/cKs9skDd/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBkaxXBXlW24uMVRNJ9",
+                    spotify:    "https://open.spotify.com/track/1JmjxKr6SAlEBPOO7i14qI?si=7ea0394708bf4009",
+                    youtube:    "https://music.youtube.com/watch?v=PvuYSybooLg&si=d8aKa8GAB4AfI11t"
+                }
+            }
+
+        ]
+    },
+
+    {
+        id: "video8",
+        title: "АПНУЛИ НЕРЕАЛЬНЫЙ РАНГ НА ХУДШИХ СКИНАХ FORTNITE",
+        date: "2024-03-20",
+        description: "Первое видео на новом канале KekichReborn. Название канала очевидно отсылает на мое своеобразное перерождение",
+        thumbnail: "https://i.ibb.co/n878P9VD/image.png",
+        url: "https://youtu.be/kjPZIOS9jww",
+        tracks: [
+            {
+                name: "Bruno Mars - 24K Magic",
+                cover: "https://i.ibb.co/YTJ0NDnX/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBxqNCtZP2Ej1XREOlY",
+                    spotify:    "https://open.spotify.com/track/6b8Be6ljOzmkOmFslEb23P?si=2799f8166d684e60",
+                    youtube:    "https://music.youtube.com/watch?v=r7-A9NqUjRI&si=mCwuFJ4n8GB3igWJ"
+                }
+            },
+
+            {
+                name: "Lyn Inaizumi - Toky Daylight",
+                cover: "https://i.ibb.co/5gjcC9qw/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBBnaL1pBN76IF0Sfgv",
+                    spotify:    "https://open.spotify.com/track/5dhdDcfa2lXYlg9XSqqZY2?si=ba058c51a8f74ca1",
+                    youtube:    "https://music.youtube.com/watch?v=GTesXj_27EE&si=5sI25gPL8nCzsHr3"
+                }
+            },
+
+            {
+                name: "Silk Sonic - Skate",
+                cover: "https://i.ibb.co/5gjcC9qw/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBFQVGGxzJ0d4TbA6w3",
+                    spotify:    "https://open.spotify.com/track/3WTWh2WDk4j8GUCGj4xfOd?si=2fbc93d37f594b75",
+                    youtube:    "https://music.youtube.com/watch?v=AVz2FAp9odU&si=wi8jmxCT7mgbKDvm"
+                }
+            },
+
+            {
+                name: "Silk Sonic - Skate",
+                cover: "https://i.ibb.co/CKMzytSV/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBFQVGGxzJ0d4TbA6w3",
+                    spotify:    "https://open.spotify.com/track/3WTWh2WDk4j8GUCGj4xfOd?si=2fbc93d37f594b75",
+                    youtube:    "https://music.youtube.com/watch?v=AVz2FAp9odU&si=wi8jmxCT7mgbKDvm"
+                }
+            },
+
+            {
+                name: "Grover Washington Jr. - Just the Two of Us",
+                cover: "https://i.ibb.co/DfjjWW24/image.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBIuiEvJv9oDcFRL0Ad",
+                    spotify:    "https://open.spotify.com/track/5fdNHVZHbWB1AaXk4RBGVD?si=3772f6fe6e5d4121",
+                    youtube:    "https://music.youtube.com/watch?v=gelwwYuYGn0&si=1uJmisrRIn1iEsLv"
+                }
+            },
+
+            {
+                name: "Lotus Juice - It's Going Down Now",
+                cover: "https://i.ibb.co/JWvDXtyt/2026-05-05-210224583.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBN6KaebfEK4FK3ztM3",
+                    spotify:    "https://open.spotify.com/track/3znIACSXPLn3HFCf7moZ28?si=f5d1f032660349df",
+                    youtube:    "https://music.youtube.com/watch?v=2KuWjZD6PBA&si=GuhVlX2bGj6AaM-L"
+                }
+            },
+
+            {
+                name: "Lotus Juice - It's Going Down Now",
+                cover: "https://i.ibb.co/JWvDXtyt/2026-05-05-210224583.png",
+                platforms: {
+                    deezer:   "https://link.deezer.com/s/33bBN6KaebfEK4FK3ztM3",
+                    spotify:    "https://open.spotify.com/track/3znIACSXPLn3HFCf7moZ28?si=f5d1f032660349df",
+                    youtube:    "https://music.youtube.com/watch?v=2KuWjZD6PBA&si=GuhVlX2bGj6AaM-L"
+                }
+            },
+
+        ]
     }
 
     // New videos go here
 ];
-
-// ================================================================
 
 const PLATFORMS_CONFIG = [
     { key: "deezer",     label: "Deezer",        class: "deezer",     icon: "❤︎⁠" },
@@ -719,7 +911,7 @@ function renderVideos() {
         card.className = "video-card";
         card.innerHTML = `
             <div class="video-thumb">
-                <img src="${video.thumbnail}" alt="${video.title}" onerror="this.style.background='#1a1a1a'; this.style.display='none'">
+                <img src="${video.thumbnail}" alt="${video.title}" loading="lazy" decoding="async" onerror="this.style.background='#1a1a1a'; this.style.display='none'">
                 <div class="play-overlay">
                     <div class="play-circle">▶</div>
                 </div>
@@ -760,7 +952,7 @@ function openSheet(videoIdx) {
         card.id = `track-${i}`;
         card.innerHTML = `
             <div class="track-cover">
-                <img src="${track.cover}" alt="${track.name}" onerror="this.parentElement.style.background='#2a2a2a'">
+                <img src="${track.cover}" alt="${track.name}" loading="lazy" decoding="async" onerror="this.parentElement.style.background='#2a2a2a'">
             </div>
             <div class="track-name">${track.name}</div>
         `;
