@@ -229,7 +229,7 @@
 <!-- TOP BAR -->
 <div class="topbar">
     <h1 style="display:flex; align-items:center; gap:10px;">
-    <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/logo%20trans.ico" style="width:32px; height:32px; border-radius:6px;">
+    <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/logo%20trans.ico" loading="lazy" decoding="async" style="width:32px; height:32px; border-radius:6px;">
     +| EPIC READER |+
 </h1>
     <div class="hamburger" id="hamburger" onclick="toggleDrawer()">
@@ -244,10 +244,10 @@
 <div class="drawer" id="drawer">
     <div class="drawer-header">+| NAVIGATE |+</div>
     <a class="nav-item active" href="index.html">
-        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/bookwhite.png" style="width:20px; height:20px;"> </span> Translates/Переводы
+        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/bookwhite.png" loading="lazy" decoding="async" style="width:20px; height:20px;"> </span> Translates/Переводы
     </a>
     <a class="nav-item" href="soundtrack.html">
-        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/notewhite.png" style="width:20px; height:20px;"> </span> OST/Саундтреки к видео
+        <span class="nav-icon"> <img src="https://raw.githubusercontent.com/IKekich/EpicReader/main/thumbnails/notewhite.png" loading="lazy" decoding="async" style="width:20px; height:20px;"> </span> OST/Саундтреки к видео
     </a>
     <!-- New pages here: -->
     <!-- <a class="nav-item" href="yourpage.html"><span class="nav-icon"></span> Page</a> -->
@@ -260,7 +260,7 @@
 <!-- POPUP -->
 <div class="popup" id="popup">
     <div class="popup-content" id="popupContent">
-        <img id="popupImg">
+        <img id="popupImg" loading="lazy" decoding="async">
         <h2 id="popupTitle"></h2>
         <p><b>Автор:</b> <span id="popupAuthor"></span></p>
         <p><b>Оригинал:</b> <a id="popupSource" target="_blank"></a></p>
@@ -274,7 +274,7 @@
 <div style="position: fixed; bottom: 16px; right: 16px; z-index: 199;">
     <div style="font-size:12px; color:#aaa; white-space:nowrap; text-align:right; margin-bottom:6px;">+| MY RECENT SONG |+</div>
     <div id="nowPlayingBox" class="now-playing-box hidden" style="position: static;">
-        <img id="npCover">
+        <img id="npCover" loading="lazy" decoding="async">
         <div class="np-meta">
             <div id="npTitle" class="np-title"></div>
             <div id="npSub" class="np-sub"></div>
@@ -337,7 +337,7 @@ const popup = document.getElementById("popup");
 mangaList.forEach((m, index) => {
     const card = document.createElement("div");
     card.className = "card";
-    card.innerHTML = `<img src="${m.cover}" alt="${m.title}"><div class="title">${m.title}</div>`;
+    card.innerHTML = `<img src="${m.cover}" alt="${m.title}" loading="lazy" decoding="async"><div class="title">${m.title}</div>`;
     card.onclick = () => openPopup(index);
     grid.appendChild(card);
 });

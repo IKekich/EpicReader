@@ -38,6 +38,7 @@
         text-align: center;
         margin-bottom: 25px;
         position: relative;
+        min-height: 320px;
     }
 
     .page-number {
@@ -340,26 +341,36 @@ if (!epicDB[mangaId]) {
 
 const pages = epicDB[mangaId].pages;
 
-pages.slice(0, 10).forEach(src => {
-    const link = document.createElement("link");
-    link.rel = "prefetch";
-    link.href = src;
-    document.head.appendChild(link);
-
-});
-
 // ------------------------------
 // Загружаем страницы
 // ------------------------------
 const reader = document.getElementById("reader");
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const img = entry.target;
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+            observer.unobserve(img);
+        }
+    });
+}, {
+    rootMargin: "400px 0px",
+    threshold: 0.1
+});
 
 pages.forEach((src, index) => {
     const block = document.createElement("div");
     block.className = "page-block";
 
     const img = document.createElement("img");
-    img.src = src;
+    img.dataset.src = src;
+    img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 9'%3E%3C/svg%3E";
     img.loading = "lazy";
+    img.decoding = "async";
     img.alt = 'Loading page...';
 
     const overlay = document.createElement("div");
@@ -367,8 +378,10 @@ pages.forEach((src, index) => {
     overlay.innerHTML = `<div class="loading-spinner"></div>`;
 
     img.onload = () => {
-        img.classList.add('loaded');
-        overlay.classList.add('hidden');
+        if (img.src === src) {
+            img.classList.add('loaded');
+            overlay.classList.add('hidden');
+        }
     };
     img.onerror = () => {
         overlay.classList.add('hidden');
@@ -383,6 +396,8 @@ pages.forEach((src, index) => {
     block.appendChild(overlay);
     block.appendChild(num);
     reader.appendChild(block);
+
+    observer.observe(img);
 });
 
 // ------------------------------
